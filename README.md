@@ -1,5 +1,19 @@
 # PullRefreshLayout
 轻量级支持下拉刷新的控件,思想来自于SwipeRefreshLayout
+## 依赖
+项目放在jitpack上
+
+```
+allprojects {
+   repositories {
+	...
+	maven { url 'https://jitpack.io' }
+   }
+}
+dependencies {
+        implementation 'com.github.frasker:PullRefreshLayout:v1.0.0-alpha'
+}
+```
 ## 使用方式
 PullRefreshLayout提供IPullRefreshHeader来回调下滑状态，header需要实现这个接口来接收下滑状态
 ```
