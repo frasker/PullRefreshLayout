@@ -1,0 +1,40 @@
+/*
+ * Copyright (C) 2019 Baidu, Inc. All Rights Reserved.
+ */
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        minSdkVersion 15
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+}
+
+// -------
+//setProperty "POM_ARTIFACT_ID", "pullrefreshlayout"
+//setProperty "PROJECT_NAME", "PullRefreshLayout"
+//setProperty "VERSION_CODE", "1"
+//setProperty "VERSION_NAME", "0.0.2"
+//setProperty "POM_DESCRIPTION", "pullrefreshlayout"
+
+ext {
+    sourceDocFiles = [rootProject.file('gradle/android-sources-docs.gradle')]
+}
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

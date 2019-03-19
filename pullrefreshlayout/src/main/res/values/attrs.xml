@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (C) 2019 Baidu, Inc. All Rights Reserved.
+  -->
+
+<resources>
+    <declare-styleable name="PullRefreshLayout">
+        <attr name="p_maxDragDistance" format="dimension" />
+        <attr name="p_refreshingHeight" format="dimension" />
+        <attr name="p_triggerSyncDistance" format="dimension" />
+        <attr name="p_refreshSuccessShowDuration" format="integer" />
+        <attr name="p_refreshFailureShowDuration" format="integer" />
+        <attr name="dragRate" format="float" />
+    </declare-styleable>
+
+</resources>
