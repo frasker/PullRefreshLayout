@@ -57,10 +57,10 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
     private static final int MAX_OFFSET_ANIMATION_DURATION = 600; // ms
     private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
     private static final int INVALID_POINTER = -1;
-    private float dragRate = .8f;
+    private float dragRate = .5f;
 
     // Default offset in dips from the top of the view to where the progress spinner should stop
-    private static final int DEFAULT_MAX_DRAG_DISTANCE = 64;
+    private static final int DEFAULT_MAX_DRAG_DISTANCE = 160;
 
     private View mTarget; // the target of the gesture
     OnRefreshListener mListener;
@@ -76,7 +76,7 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
     private boolean mIsBeingDragged;
     private boolean mIsOverAnimating = false; // 是否执行过渡动画中
     boolean mRefreshing = false; // 是否数据刷新过程中
-    private boolean mIsPinContent = false; // 下拉时内容不动模式，原生SwipeRefreshLayout效果\
+    private boolean mIsPinContent = false; // 下拉时内容不动模式，原生SwipeRefreshLayout效果
     private int mRefreshSuccessShowDuration = 200; // 刷新成功后展示时间
     private int mRefreshFailureShowDuration = 200; // 刷新失败后展示时间
     private int mHeaderOffset = 0; // 支持头部偏移量
@@ -151,12 +151,14 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
         setTargetOffsetTopAndBottom(-mCurrentTargetOffsetTop);
         changeState(State.NONE);
         changeOffset();
+        ((IPullRefreshHeader) mHeaderView).onReset(PullRefreshLayout.this);
         mCurrentTargetOffsetTop = 0;
     }
 
     private void changeState(State state) {
         if (state != mState) {
             mState = state;
+            ((IPullRefreshHeader) mHeaderView).onStateChanged(PullRefreshLayout.this, mState);
         }
     }
 
@@ -289,6 +291,7 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
             ensureTarget();
             mRefreshing = false;
             changeState(success ? State.REFRESH_SUCCESS : State.REFRESH_FAILURE);
+            changeOffset();
             removeCallbacks(showAction);
             postDelayed(showAction, success ? mRefreshSuccessShowDuration : mRefreshFailureShowDuration);
         }
@@ -644,7 +647,6 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
         public void run() {
             if (mLayout != null && mScroller != null) {
                 if (mScroller.computeScrollOffset()) {
-                    Log.i(TAG, "run: curY" + mScroller.getCurrY());
                     setTargetOffsetTopAndBottom(mScroller.getCurrY());
                     // Post ourselves so that we run on the next animation
                     ViewCompat.postOnAnimation(mLayout, this);
@@ -741,13 +743,11 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
 
     @Override
     public void onStopNestedScroll(View target) {
-        Log.i(TAG, "onStopNestedScroll: ");
         onStopNestedScroll(target, ViewCompat.TYPE_TOUCH);
     }
 
     @Override
     public void onStopNestedScroll(@NonNull View target, int type) {
-        Log.i(TAG, "onStopNestedScroll: type" + type);
         mNestedScrollingParentHelper.onStopNestedScroll(target, type);
         mNestedScrollInProgress = false;
         // Finish the spinner for nested scrolling if we ever consumed any
@@ -789,20 +789,21 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
         }
     }
 
-    private int calculateOffsetByDragRate(int dy) {
+    protected int calculateOffsetByDragRate(int dy) {
 
         float downResistance;
 
         if (dy < 0) {
             downResistance = dragRate;
+            return (int) (dy * downResistance);
         } else {
-            final float overscrollTop = mCurrentTargetOffsetTop + dy;
+            final float overscrollTop = mCurrentTargetOffsetTop;
             float originalDragPercent = overscrollTop / mTotalDragDistance;
             float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
             downResistance = 1 - dragPercent;
         }
 
-        return (int) (dy * downResistance);
+        return (int) Math.max(dy * downResistance, 1);
     }
 
     // NestedScrollingChild
@@ -914,10 +915,11 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
                 ensureTarget();
                 mRefreshing = true;
                 changeState(State.REFRESH_RELEASED);
+                changeOffset();
+                animateOffsetTo(mRefreshingHeight > 0 ? mRefreshingHeight : mHeaderView.getHeight(), 0, mRefreshListener);
             } else {
-                mNotify = false;
+                animateOffsetTo(mRefreshingHeight > 0 ? mRefreshingHeight : mHeaderView.getHeight(), 0, null);
             }
-            animateOffsetTo(mRefreshingHeight > 0 ? mRefreshingHeight : mHeaderView.getHeight(), 0, mRefreshListener);
         } else {
             if (!mRefreshing) {
                 animateOffsetTo(0, 0, mRefreshListener);
@@ -951,6 +953,10 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
         mIsOverAnimating = true;
         if (mCurrentTargetOffsetTop == target) {
             if (mOffsetAnimator != null && mOffsetAnimator.isRunning()) {
+                // 直接回调动画结束
+                if (listener != null) {
+                    listener.onAnimationEnd(mOffsetAnimator);
+                }
                 mOffsetAnimator.cancel();
             }
             return;
@@ -969,9 +975,10 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
         } else {
             mOffsetAnimator.cancel();
         }
-
-        mOffsetAnimator.removeAllListeners();
-        mOffsetAnimator.addListener(listener);
+        if (listener != null) {
+            mOffsetAnimator.removeAllListeners();
+            mOffsetAnimator.addListener(listener);
+        }
 
         mOffsetAnimator.setDuration(Math.min(duration, MAX_OFFSET_ANIMATION_DURATION));
         mOffsetAnimator.setIntValues(mCurrentTargetOffsetTop, target);

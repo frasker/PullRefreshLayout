@@ -7,7 +7,6 @@
 
     <com.frasker.pullrefreshlayout.PullRefreshLayout
         android:id="@+id/lv"
-        app:p_maxDragDistance="120dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <com.frasker.example.MyHeader
@@ -17,20 +16,6 @@
             android:id="@+id/rList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
-        <!--<FrameLayout-->
-            <!--android:background="@color/colorPrimary"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"></FrameLayout>-->
     </com.frasker.pullrefreshlayout.PullRefreshLayout>
-    <!--<android.support.v4.widget.SwipeRefreshLayout-->
-        <!--android:id="@+id/lv1"-->
-        <!--app:maxDragDistance="120dp"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-        <!--<android.support.v7.widget.RecyclerView-->
-            <!--android:id="@+id/rList"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"/>-->
-    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
 
 </android.support.constraint.ConstraintLayout>

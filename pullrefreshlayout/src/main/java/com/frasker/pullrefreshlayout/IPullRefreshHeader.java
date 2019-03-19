@@ -12,8 +12,9 @@ public interface IPullRefreshHeader {
 
     void onReady(PullRefreshLayout refreshLayout);
 
-    void onReset();
+    void onReset(PullRefreshLayout refreshLayout);
 
     void onOffsetTopChanged(PullRefreshLayout refreshLayout, int offset, float progress, PullRefreshLayout.State state);
 
+    void onStateChanged(PullRefreshLayout refreshLayout,PullRefreshLayout.State newState);
 }
