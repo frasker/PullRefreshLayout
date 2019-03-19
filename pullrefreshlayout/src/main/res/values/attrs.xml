@@ -6,10 +6,10 @@
     <declare-styleable name="PullRefreshLayout">
         <attr name="p_maxDragDistance" format="dimension" />
         <attr name="p_refreshingHeight" format="dimension" />
-        <attr name="p_triggerSyncDistance" format="dimension" />
+        <attr name="p_triggerRefreshDistance" format="dimension" />
         <attr name="p_refreshSuccessShowDuration" format="integer" />
         <attr name="p_refreshFailureShowDuration" format="integer" />
-        <attr name="dragRate" format="float" />
+        <attr name="p_dragRate" format="float" />
     </declare-styleable>
 
 </resources>

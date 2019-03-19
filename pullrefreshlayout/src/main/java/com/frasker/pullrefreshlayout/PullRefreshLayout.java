@@ -209,10 +209,10 @@ public class PullRefreshLayout extends ViewGroup implements NestedScrollingParen
 
         setChildrenDrawingOrderEnabled(true);
 
-        dragRate = typedArray.getFloat(R.styleable.PullRefreshLayout_dragRate, .5f);
+        dragRate = typedArray.getFloat(R.styleable.PullRefreshLayout_p_dragRate, .5f);
 
         mTotalDragDistance = (int) typedArray.getDimension(R.styleable.PullRefreshLayout_p_maxDragDistance, (int) (DEFAULT_MAX_DRAG_DISTANCE * metrics.density));
-        mTriggerRefreshDistance = (int) typedArray.getDimension(R.styleable.PullRefreshLayout_p_triggerSyncDistance, mTotalDragDistance * .6f);
+        mTriggerRefreshDistance = (int) typedArray.getDimension(R.styleable.PullRefreshLayout_p_triggerRefreshDistance, mTotalDragDistance * .6f);
         mRefreshSuccessShowDuration = typedArray.getInteger(R.styleable.PullRefreshLayout_p_refreshSuccessShowDuration, 200);
         mRefreshFailureShowDuration = typedArray.getInteger(R.styleable.PullRefreshLayout_p_refreshFailureShowDuration, 200);
         mRefreshingHeight = (int) typedArray.getDimension(R.styleable.PullRefreshLayout_p_refreshingHeight, -1);
