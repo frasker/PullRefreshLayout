@@ -1,6 +1,3 @@
-/*
- * Copyright (C) 2019 Baidu, Inc. All Rights Reserved.
- */
 
 package com.frasker.example;
 
@@ -18,7 +15,6 @@ import com.frasker.pullrefreshlayout.PullRefreshLayout;
 
 /**
  * author: created by lvmo on 2019/3/4
- * email: lvmo@baidu.com
  */
 public class MyHeader extends FrameLayout implements IPullRefreshHeader {
     TextView textView;
